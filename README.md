@@ -102,11 +102,11 @@ USAGE:
 ```bash
 python autoencoder.py --dataset <path_to_dataset> <dataset_type> <granularity> --model <path_to_model> --config <config_file> <wandb_sweep_id> --device <device_type> --wandb <wandb_mode>
 ```
---dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
---model: (Optional) Path to a pre-trained Autoencoder model file.
---config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
---device: Specifies the device for training.
---wandb: Sets the WandB mode (online, offline, or disabled).
+- dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
+- model: (Optional) Path to a pre-trained Autoencoder model file.
+- config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
+- device: Specifies the device for training.
+- wandb: Sets the WandB mode (online, offline, or disabled).
 
 ### dataset.py
 The script defines custom dataset classes that load, process, and manage protein-ligand interaction data. These classes are designed to support:
@@ -121,11 +121,11 @@ USAGE:
 ```bash
 python multilayer_perceptron.py --dataset <path_to_dataset> <dataset_type> <granularity> --model <path_to_model> --config <config_file> <wandb_sweep_id> --device <device_type> --wandb <wandb_mode>
 ```
---dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
---model: (Optional) Path to a pre-trained Autoencoder model file.
---config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
---device: Specifies the device for training.
---wandb: Sets the WandB mode (online, offline, or disabled).
+- dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
+- model: (Optional) Path to a pre-trained Autoencoder model file.
+- config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
+- device: Specifies the device for training.
+- wandb: Sets the WandB mode (online, offline, or disabled).
 
 ### torch_map.py
 This script defines mappings for common activation functions, loss functions (criterions), and optimizers to streamline model configuration.
