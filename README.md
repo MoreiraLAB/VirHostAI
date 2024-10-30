@@ -41,43 +41,98 @@ Data viralbindpredictDB.hdf5 file regardinig protein chain residue classificatio
 ./ViralBindPredictDB/ folder contains .txt files with keys and descriptors from viralbindpredictDB.hdf5:
 
  1) "class_keys.txt"- file with the 20.441 class keys (PDB:chain_compound).
- 2) "mordred_keys.txt"- file with the 2.066 Mordred keys (PDB compound ID).
+ 2) "ligands.txt"- file with the 2.066 ligand keys (PDB compound ID).
  3) "mordred_descriptors.txt"- file with the 1514 Mordred descriptors.
- 4) "spotone_keys.txt"- file with the 12.824 SPOTONE keys (PDB:chain).
+ 4) "proteins.txt"- file with the 12.824 protein keys (PDB:chain).
  5) "spotone_descriptors.txt"- file with the 173 SPOTONE descriptors.
- 6) "pssm_keys.txt"- file with the 12.824 PSSM keys (PDB:chain).
- 7) "pssm_descriptors.txt"- file with the 173 PSSM descriptors.
+ 6) "pssm_descriptors.txt"- file with the 173 PSSM descriptors.
 
 ### BU48dataset:
+This directory holds the BU48 test dataset necessary to run the model, organized into two key components:
+
 ### A) dataset-bu48-transformed-1.hdf5:
-Dataset with BU48 descriptor information (Mordred, SPOTONE, PSSM)
+This HDF5 file contains the BU48 dataset, which has been enhanced with three primary descriptor sets: Mordred descriptors (molecular fingerprints), SPOTONE descriptors (structure-based features), and PSSM (Position-Specific Scoring Matrix for sequence-based properties). Together, these descriptors cover a broad range of molecular and structural information about protein-ligand interactions.
 
 ### B) transformations-logs:
-Includes a txt with information regarding transformations on BU48 dataset.
+This folder includes a log file that details every preprocessing step applied to the BU48 dataset to ensure model compatibility. The transformations undertaken include:
+
+- Chain Removal: Chains were filtered based on parameters such as zero values in Mordred features.
+- Residue Removal: Residues containing NaN or inf values in descriptor readings were excluded to ensure data quality.
+- Ligand Feature Removal: Selected ligand-specific features with NaN values were filtered out to refine the dataset.
+- Ligand Removal: Ligands with NaN or inf values were removed to maintain the dataset’s integrity.
+- Protein Feature Dimensionality Reduction: Using the autoencoder model ae-fanciful-sweep-308.pt, protein feature dimensionality was reduced from 216 to 60, improving computational efficiency.
+- Final Dataset Packaging: The final dataset was compactly repacked with h5repack for streamlined access and querying, resulting in dataset-bu48-transformed-1.hdf5.
 
 ### models/config-files:
-Details on MLP model and Autoencoder hyperparameter search
+This folder includes configuration files that set up the hyperparameter searches for the Multi-Layer Perceptron (MLP) and Autoencoder models. Each configuration defines the search spaces and parameters used to optimize the models’ training and performance.
+
+### A) config-ae.yaml - Autoencoder Configuration:
+This file outlines the hyperparameter search for the Autoencoder model, using a random search approach aimed at minimizing the loss across training epochs. Key parameters include:
+
+- encoder_layers: Specifies different layer architectures for the encoder, offering a range of layer sizes to adjust model depth and feature extraction capacity.
+- latent_vector: Sets possible latent space dimensions, ranging from 180 down to 40.
+- activation: Tests various activation functions (relu, leaky-relu, gelu) to find the most effective non-linear transformation.
+- criterion: Uses Mean Squared Error (mse) as the loss function for model training.
+- optimizer: Applies the adam optimizer to enable adaptive learning rates.
+- learning_rate: Explores a range between 0.0001 and 0.01 for learning rate selection.
+- splits: Sets a data split ratio of [0.9, 0.1, 0], allocating 90% of the data for training and 10% for validation.
+- epochs: Tests epochs ranging from 6 to 14.
+- batch_size: Evaluates batch sizes between 32 and 256 to ensure stability during training.
+- shuffle: Shuffles data at each epoch to improve model generalization.
+
+### B) config-mlp.yaml - MLP Configuration:
+This file configures the hyperparameter search for the MLP model, using random search to minimize training epoch loss. Primary parameters include:
+
+- layers: Defines options for MLP layer architecture and depth, such as num_layers, with flexible architecture types (e.g., =, <, >, <>).
+- activation: Tests multiple activation functions (relu, leaky-relu, gelu, tanh, sigmoid) to evaluate non-linearity effects.
+- optimizer: Tests both adam and sgd optimizers.
+- learning_rate: Adjusts learning rates over a range from 0 to 0.1.
+- splits: Data split configurations include options like [0.7, 0.3, 0] and [0.8, 0.2, 0].
+- epochs: Ranges between 4 and 10 epochs.
+- batch_size: Tests batch sizes from 32 to 512 to optimize training throughput.
+- shuffle: Ensures data shuffling to enhance training robustness.
+
+These configuration files allow extensive hyperparameter tuning, providing flexibility to adapt both models to the dataset’s specific requirements for optimal performance.
 
 ### Script files:
 ### autoencoder.py
-Script to run the autoencoder in a input data
+This Python script is designed to train an Autoencoder model that encodes and reconstructs molecular descriptors for proteins. Model and configuration settings can be provided as command-line arguments.
+
+USAGE:
+```bash
+python autoencoder.py --dataset <path_to_dataset> <dataset_type> <granularity> --model <path_to_model> --config <config_file> <wandb_sweep_id> --device <device_type> --wandb <wandb_mode>
+```
+--dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
+--model: (Optional) Path to a pre-trained Autoencoder model file.
+--config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
+--device: Specifies the device for training.
+--wandb: Sets the WandB mode (online, offline, or disabled).
 
 ### dataset.py
-Script to access input data and transform data into balanced data, if needed.
+The script defines custom dataset classes that load, process, and manage protein-ligand interaction data. These classes are designed to support:
+- Flexible Granularity: Datasets can be accessed at different levels (residues or chains).
+- Data Splits: Supports train, validation, and test splits as specified in the dataset.
+- Balanced Datasets: Additional support for balanced batch handling with the BalancedInteractionsDataset.
 
 ### multilayer_perceptron.py
-Script to run a Multilayer Perceptron
+This Python script trains a Multilayer Perceptron (MLP) model on interaction datasets with support for hyperparameter tuning via Weights & Biases (WandB). The script is designed for binary classification tasks involving interaction data, providing configurable architectures, training metrics, and options for balanced datasets.
+
+USAGE:
+```bash
+python multilayer_perceptron.py --dataset <path_to_dataset> <dataset_type> <granularity> --model <path_to_model> --config <config_file> <wandb_sweep_id> --device <device_type> --wandb <wandb_mode>
+```
+--dataset: Specifies the path to the HDF5 dataset and granularity level (residues or chains).
+--model: (Optional) Path to a pre-trained Autoencoder model file.
+--config: YAML configuration file for hyperparameter sweeps and the WandB sweep ID.
+--device: Specifies the device for training.
+--wandb: Sets the WandB mode (online, offline, or disabled).
 
 ### torch_map.py
-Script with a hyperparameters list used for MLP
+This script defines mappings for common activation functions, loss functions (criterions), and optimizers to streamline model configuration.
 
 ### transformations.py
-Script to clean dataset
+This script defines several functions for managing and transforming datasets. It includes support for removing or updating specific dataset features, handling missing values, and rebalancing data through oversampling and SMOTE. Additionally, it logs each transformation, providing transparency and reproducibility.
 
-```bash
-python3 5-spotone_features.py
-```
-
-### If you use our predictor, please cite the following.
+### If you use ViralBindPredict, please cite the following.
 
 [ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights] PENDING CITATION
