@@ -1,0 +1,67 @@
+entity: 
+project: 
+name: 
+
+method: random
+
+metric:
+  name: train/epoch-loss
+  goal: minimize
+
+
+parameters:
+  encoder_layers:
+    values:
+      - [800, 400]
+      - [700, 400]
+      - [600, 300]
+      - [800, 500, 200]
+      - [800, 600, 400]
+      - [700, 500, 300]
+      - [800, 650, 500, 350, 200]
+  
+  latent_vector:
+    values:
+      - 180
+      - 160
+      - 140
+      - 120
+      - 100
+      - 80
+      - 60
+      - 40
+  
+  activation:
+    values: [relu, leaky-relu, gelu]
+  
+  criterion:
+    value: mse
+  
+  optimizer:
+    value: adam
+  
+  learning_rate:
+    distribution: uniform
+    min: 0.0001
+    max: 0.01
+  
+  splits:
+    value: [0.9, 0.1, 0]
+  
+  epochs:
+    values: [6, 8, 10, 12, 14]
+  batch_size:
+    values: [32, 64, 128, 256]
+  shuffle:
+    value: True
+
+  model_log_frequency:
+    value: 0
+  train_batch_logs_per_epoch:
+    value: 0.001
+  validation_batch_logs_per_epoch:
+    value: 0.002
+  test_batch_logs_per_epoch:
+    value: 0
+  save_model:
+    value: True
