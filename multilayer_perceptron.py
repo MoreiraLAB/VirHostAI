@@ -16,6 +16,7 @@ try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+import csv
 
 
 
@@ -286,6 +287,9 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
         # test
         epoch = 1
         if test_dataloader:
+            with open('./outputs.csv', mode='w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Batch', 'True_Label', 'Probability', 'Prediction'])
             print()
 
             epoch_loss = 0
@@ -322,6 +326,9 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
                     epoch_f1_score += batch_f1_score
                     batch_auroc = auroc(probabilities, y)
                     epoch_auroc += batch_auroc
+
+                    for i in range(len(y)):
+                        writer.writerow([batch, y.cpu().numpy()[i], probabilities.cpu().numpy()[i][0], predictions.cpu().numpy()[i][0]])
                     
                     progress.set_postfix({'test/batch-loss': f'{batch_loss:.4f}'})
                     if (batch % test_batch_log_frequency) == 0 or (batch + 1) == len(test_dataloader):

@@ -416,19 +416,6 @@ def set_dtype(original_filepath: str, transformed_filepath: str, features: Optio
 
 
 
-'''
-def scale_zscore():
-    pass
-
-
-
-
-def reduce_dimensionality_pca():
-    pass
-'''
-
-
-
 def reduce_dimensionality_ae_proteins(original_filepath: str, transformed_filepath: str, model_filepath:str):
     original = ProteinsDataset(original_filepath)
     original.clone(transformed_filepath)
@@ -458,15 +445,6 @@ def reduce_dimensionality_ae_proteins(original_filepath: str, transformed_filepa
 
     log.close()
 
-
-
-
-
-
-'''
-def reduce_dimensionality_umap():
-    pass
-'''
 
 
 

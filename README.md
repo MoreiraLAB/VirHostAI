@@ -19,13 +19,20 @@ Supervised Learning; Neural Networks.
 
 ### Prerequisites:
 ViralBindPredict was developed and tested as follows:
-* Python 3.11
+* python - 3.11.6
+* pytorch - 2.1.0
+* torchmetrics - 1.2.0
+* torchinfo - 1.8.0
+* numpy - 1.26.0
+* h5py  - 3.10.0
+* imbalanced-learn - 0.11.0
+* scikit-learn - 1.3.1
+* scipy - 1.11.3
+* tqdm - 4.66.1
+* wandb - 0.15.12
+* dill - 0.3.7
 * MORDRED - version 1.2.0
 * RDKit - version 2023.9.4
-* numpy - version 1.26.3
-* pandas - version 2.2.0 
-* scipy - version 1.12.0
-* h5py - version 3.10.0
 
 We recommend creating an isolated Conda environment to run our pipeline, which can be performed using the following code:
 ```bash
