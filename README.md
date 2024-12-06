@@ -5,7 +5,7 @@ The development of a single drug can cost up to 1.8 billion USD and require over
 
 __Keywords:__ Viral Drug Discovery; Viral Drug-Target Interactions; Viral Ligand Binding Site; Deep Learning; Supervised Learning; Neural Networks.
 
-![Graphical Abstract]()
+![Graphical Abstract](images/abstract.png)
 
 ## Prerequisites
 Python libraries:
