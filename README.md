@@ -42,7 +42,7 @@ __Note:__ Required information to replicate and run ViralBindPredict is describe
 __Note:__ To use WandB, you need to create an account at https://wandb.ai/ and follow the instructions to set up your account.
 
 ### ViralBindPredictDB
-Dataset __viralbindpredictDB.hdf5__ regarding protein chain/residue classification, Mordred, SPOTONE and PSSM features is available at [TODO]. Folder [ViralBindPredictDB](./ViralBindPredictDB/) contains text files (_.txt_) with keys and descriptors from viralbindpredictDB.hdf5.
+Dataset __viralbindpredictDB.hdf5__ regarding protein chain/residue classification, Mordred, SPOTONE and PSSM features is available at [ViralBindPredict Dropbox](https://www.dropbox.com/scl/fo/nq47acmr2ty62iflu9rwn/AJhe9a9gqoKblgHkYDMf_Gk?rlkey=dcivaufhohazumpetifq9chkj&st=ac9imrzl&dl=0). Folder [ViralBindPredictDB](./ViralBindPredictDB/) contains text files (_.txt_) with keys and descriptors from viralbindpredictDB.hdf5.
 - [class_keys.txt](./ViralBindPredictDB/class_keys.txt): file with the 20.441 class keys with nomenclature _PDB ID (4 letters) : Chain ID (1 letter) _ PDB Compound ID (3 letters)_, e.g., 102l:A_0BU.
 - [ligands.txt](./ViralBindPredictDB/ligands.txt): file with the 2.066 ligand keys with nomenclature _PDB Compound ID (3 letters)_, e.g., 0BU.
 - [mordred_descriptors.txt](./ViralBindPredictDB/mordred_descriptors.txt): file with the 1514 Mordred features.
