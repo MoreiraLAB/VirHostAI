@@ -53,8 +53,7 @@ Dataset __viralbindpredictDB.hdf5__ regarding protein chain/residue classificati
 ### datasets
 This folder contains an example of a dataset (dataset-example.hdf5) with a single interaction to run the ViralBindPredict pipeline. The dataset is stored in the HDF5 format and only includes protein and ligand features, i.e., there is not interaction target information.
 
-This folder also contains a subfolder where transformations are logged for future reference. The transformations (dataset-example.txt) undertaken include:
-[TODO]
+This folder also contains a subfolder where transformations are logged for future reference. The transformations for [example-train.hdf5](datasets/example-train.hdf5) are in [example-train.txt](datasets/transformations-logs/example-train.txt).
 
 ### models/config-files:
 This folder includes configuration files that set up the hyperparameter searches for the Multi-Layer Perceptron (MLP) and Autoencoder (AE) models. Each configuration defines the search spaces and parameters used to optimize the models’ training and performance.
