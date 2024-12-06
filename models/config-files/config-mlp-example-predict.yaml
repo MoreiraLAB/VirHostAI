@@ -1,6 +1,6 @@
-entity: optimus-bits
-project: example
-name: predict
+entity: 
+project: 
+name: 
 
 method: random
 

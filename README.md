@@ -103,13 +103,13 @@ usage: autoencoder.py [--dataset DATASET DATASET DATASET] [--model MODEL] [--con
 --wandb {online,offline,disabled}
 
 #example 1: create new model, use local config file and upload results to wandb (autoencode protein features, chain granularity)
-python autoencoder.py --dataset dataset-example.hdf5 proteins chain --config models/config-files/config-ae.yaml 10 --device cuda:0 --wandb online
+python autoencoder.py --dataset datasets/example-train.hdf5 proteins chain --config models/config-files/config-ae.yaml 10 --device cuda:0 --wandb online
 
 #example 2: reuse model, associate run to already existing sweep and save results locally (autoencode protein features, residue granularity)
-python autoencoder.py --dataset dataset-example.hdf5 proteins residue --model models/ae-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
+python autoencoder.py --dataset datasets/example-train.hdf5 proteins residue --model models/ae-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
 
 # example 3: create new model, associate run to already existing sweep and upload results to wandb (autoencode protein and ligand features, residue granularity)
-python autoencoder.py --dataset dataset-example.hdf5 interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
+python autoencoder.py --dataset datasets/example-train.hdf5 interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
 ```
 
 #### dataset.py
@@ -135,13 +135,16 @@ usage: multilayer_perceptron.py [--dataset DATASET DATASET DATASET] [--model MOD
 --wandb {online,offline,disabled}
 
 #example 1: create new model, use local config file and upload results to wandb (train on protein and ligand features, residue granularity)
-python multilayer_perceptron.py --dataset dataset-example.hdf5 interactions residue --config models/config-files/config-mlp.yaml 10 --device cuda:0 --wandb online
+python multilayer_perceptron.py --dataset datasets/example-train.hdf5 interactions residue --config models/config-files/config-mlp.yaml 10 --device cuda:0 --wandb online
 
 #example 2: reuse model, associate run to already existing sweep and save results locally (train on protein and ligand features, chain granularity)
-python multilayer_perceptron.py --dataset dataset-example.hdf5 interactions chain --model models/mlp-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
+python multilayer_perceptron.py --dataset datasets/example-train.hdf5 interactions chain --model models/mlp-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
 
 # example 3: create new model, associate run to already existing sweep and upload results to wandb (train on balanced protein and ligand features, residue granularity) (balanced datasets have an extra root group in the HDF5 file called balanced-batches)
 python multilayer_perceptron.py --dataset some-balanced-dataset.hdf5 balanced-interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
+
+# example 4: reuse model, use local config file and save results locally (test, chain granularity)
+python multilayer_perceptron.py --dataset datasets/example-predict.hdf5 interactions chain --model models/mlp-silvery-sweep-16.pt --config models/config-files/config-mlp-example-predict.yaml 1 --wandb disabled
 ```
 
 #### torch_map.py
