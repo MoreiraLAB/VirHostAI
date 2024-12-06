@@ -1,8 +1,10 @@
 import argparse
+import csv
 from datasets import InteractionsDataset, BalancedInteractionsDataset
 import dill
 import functools
 import math
+import numpy as np
 import torch
 from torch import nn
 from torch_map import ACTIVATIONS, CRITERIONS, OPTIMIZERS
@@ -16,7 +18,6 @@ try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
-import csv
 
 
 
@@ -286,10 +287,13 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
         
         # test
         epoch = 1
+        dataset.set_split('test')
         if test_dataloader:
-            with open('./outputs.csv', mode='w', newline='') as file:
+            if wandb_run.config.batch_size == 1:
+                file = open('./outputs.csv', mode='w', newline='')
                 writer = csv.writer(file)
-                writer.writerow(['Batch', 'True_Label', 'Probability', 'Prediction'])
+                writer.writerow(['interaction', 'shape', 'probabilities', 'predictions'])
+            
             print()
 
             epoch_loss = 0
@@ -327,8 +331,10 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
                     batch_auroc = auroc(probabilities, y)
                     epoch_auroc += batch_auroc
 
-                    for i in range(len(y)):
-                        writer.writerow([batch, y.cpu().numpy()[i], probabilities.cpu().numpy()[i][0], predictions.cpu().numpy()[i][0]])
+                    if wandb_run.config.batch_size == 1:
+                        probabilities_str = np.array2string(probabilities.cpu().numpy(), separator=',', threshold=np.inf).replace('\n', '')
+                        predictions_str = np.array2string(predictions.cpu().numpy(), separator=',', threshold=np.inf).replace('\n', '')
+                        writer.writerow([batch, y.shape, probabilities_str, predictions_str])
                     
                     progress.set_postfix({'test/batch-loss': f'{batch_loss:.4f}'})
                     if (batch % test_batch_log_frequency) == 0 or (batch + 1) == len(test_dataloader):
@@ -354,6 +360,9 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
                 print(f'      test/epoch-recall={epoch_recall:.4f}')
                 print(f'      test/epoch-f1-score={epoch_f1_score:.4f}')
                 print(f'      test/epoch-auroc={epoch_auroc:.4f}')
+            
+            if wandb_run.config.batch_size == 1:
+                file.close()
 
         if wandb_run.config.save_model:
             print()

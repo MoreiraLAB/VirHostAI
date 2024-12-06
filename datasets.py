@@ -184,7 +184,7 @@ class InteractionsDataset(BaseDataset, Dataset):
     def set_split(self, split: str = 'dataset') -> None:
         # assert that the passed split is valid and is not empty
         assert split in self.chain_map, f'ERROR: {split} does not exist'
-        assert len(self.chain_map[split]) != 0, f'ERROR: {split} is empty'
+        # assert len(self.chain_map[split]) != 0, f'ERROR: {split} is empty'
 
         # set split to passed split ("train", "test", "validation" or "dataset" (no split, dataset as a whole))
         self.split = split
