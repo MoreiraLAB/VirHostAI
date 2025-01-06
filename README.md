@@ -171,5 +171,8 @@ There is no `__main__` function in this script. It is designed to be imported an
 set PYTHONUTF8=1
 ```
 
+### Weight initialization
+The weights of the models are initialized using a random approach with no fixed seed.
+
 ### If you use ViralBindPredict, please cite the following.
 [ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights] PENDING CITATION
