@@ -166,6 +166,9 @@ There is no `__main__` function in this script. It is designed to be imported an
 - `sample_smote(original_filepath: str, transformed_filepath: str, residue_granularity: bool, batch_size: int, shuffle: bool = False, seed: int = 0)`: Applies SMOTE (Synthetic Minority Over-sampling Technique) to balance the dataset, creating synthetic samples for the minority class. This transformation results in a new dataset type called [BalancedInteractionsDataset](datasets.py#L314), which helps in addressing class imbalance.
 - `sample_over(original_filepath: str, transformed_filepath: str, residue_granularity: bool, batch_size: int, shuffle: bool = False, seed: int = 0)`: Applies random oversampling to balance the dataset, duplicating samples from the minority class. This transformation also results in a new dataset type called [BalancedInteractionsDataset](datasets.py#L314), which is useful for mitigating class imbalance issues.
 
+### New Prediction:
+To make a new prediction, ensure you have the SMILES and sequences of the complexes you are interested in. Refer to the PREDICTION folder and its README file for instructions, as well as an example provided in the NEW_PREDICTIONS folder. Additionally, update the directory in the ViralBindPredict_variables.py script located in the SCRIPTS folder.
+
 ### If you are running this project on Windows and get an encoding related error, please run the following command in the terminal before running the project.
 ```bash
 set PYTHONUTF8=1
