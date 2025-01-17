@@ -7,87 +7,83 @@ __Keywords:__ Viral Drug Discovery; Viral Drug-Target Interactions; Viral Ligand
 
 ![Graphical Abstract](images/abstract.png)
 
-## Prerequisites
-Python libraries:
-* python - 3.11.6
-* pytorch - 2.1.0
-* torchmetrics - 1.2.0
-* torchinfo - 1.8.0
-* numpy - 1.26.0
-* h5py  - 3.10.0
-* imbalanced-learn - 0.11.0
-* scikit-learn - 1.3.1
-* scipy - 1.11.3
-* tqdm - 4.66.1
-* wandb - 0.15.12
-* dill - 0.3.7
-* MORDRED - version 1.2.0
-* RDKit - version 2023.9.4
+## Requirements
 
-We recommend creating an isolated Conda environment to run our pipeline, which can be performed using the following code:
+A suitable [conda](https://conda.io/) environment named `ViralBindPredict` can be created and activated with:
+
+__Note:__ This project was designed to run on Linux. To install the requirements on Linux, use the following commands:
+
 ```bash
-conda create --name ViralBindPredict python=3.11.6
-
-# installing pytorch: https://pytorch.org
-# our pytorch installation: conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
-conda install torchmetrics torchinfo numpy h5py tqdm dill wandb imbalanced-learn scikit-learn scipy pyarrow rdkit mordred requests biopython pandas
-
+conda env create -f environment.yml
 conda activate ViralBindPredict
 ```
 
-__Note:__ The environment name, defined after the "--name" argument in the first step, can be whatever the user desires.
+__Note:__ If you are running this project on Windows and get an encoding-related error, please run the following command in the terminal before running the project. You might need to install Windows Subsystem for Linux (WSL) and Ubuntu on Windows before running the project.
+ 
+```bash
+set PYTHONUTF8=1
+```
+__Note:__ If you are running this project on a Mac, please install the required packages manually. You may need to run the following command initially: `conda config --append channels conda-forge`
 
-__Note:__ Required information to replicate and run ViralBindPredict is described in this repository.
+```bash
+# access pytorch and select your device choices: https://pytorch.org
+# run command presented by pytorch for your device
+# our pytorch installation: conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+conda create -n ViralBindPredict
+conda install torch torchmetrics torchinfo numpy h5py tqdm dill wandb imbalanced-learn scikit-learn scipy pyarrow rdkit mordred requests biopython pandas imblearn pyaml
+conda activate ViralBindPredict
+```
 
-__Note:__ To use WandB, you need to create an account at https://wandb.ai/ and follow the instructions to set up your account.
+Before running this project:
 
-### ViralBindPredictDB
-Dataset __viralbindpredictDB.hdf5__ regarding protein chain/residue classification, Mordred, SPOTONE and PSSM features is available at [ViralBindPredict Dropbox](https://www.dropbox.com/scl/fo/nq47acmr2ty62iflu9rwn/AJhe9a9gqoKblgHkYDMf_Gk?rlkey=dcivaufhohazumpetifq9chkj&st=ac9imrzl&dl=0). Folder [ViralBindPredictDB](./ViralBindPredictDB/) contains text files (_.txt_) with keys and descriptors from viralbindpredictDB.hdf5.
-- [class_keys.txt](./ViralBindPredictDB/class_keys.txt): file with the 20.441 class keys with nomenclature _PDB ID (4 letters) : Chain ID (1 letter) _ PDB Compound ID (3 letters)_, e.g., 102l:A_0BU.
-- [ligands.txt](./ViralBindPredictDB/ligands.txt): file with the 2.066 ligand keys with nomenclature _PDB Compound ID (3 letters)_, e.g., 0BU.
-- [mordred_descriptors.txt](./ViralBindPredictDB/mordred_descriptors.txt): file with the 1514 Mordred features.
-- [proteins.txt](./ViralBindPredictDB/proteins.txt): file with the 12.824 protein keys with nomenclature _PDB ID (4 letters) : Chain ID (1 letter)_, e.g., 102l:A.
-- [spotone_descriptors.txt](./ViralBindPredictDB/spotone_descriptors.txt): file with the 173 SPOTONE features.
-- [pssm_descriptors.txt](./ViralBindPredictDB/pssm_descriptors.txt): file with the 42 PSSM features.
+Please go to [models/config-files/config-mlp-example-predict.yaml](models/config-files/config-mlp-example-predict.yaml) and put your wandb profile name in entity.
 
-### datasets
-This folder contains an example of a dataset (dataset-example.hdf5) with a single interaction to run the ViralBindPredict pipeline. The dataset is stored in the HDF5 format and only includes protein and ligand features, i.e., there is not interaction target information.
+__Note:__ To use WandB, you need to create an account at https://wandb.ai/ and follow the instructions to set up your account. When prompted, you might need to provide your API key.
 
-This folder also contains a subfolder where transformations are logged for future reference. The transformations for [example-train.hdf5](datasets/example-train.hdf5) are in [example-train.txt](datasets/transformations-logs/example-train.txt).
+## Uniref100 database
+It is necessary to manually download the uniref100 database from [UniProt](https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref100/uniref100.fasta.gz) website.
+The file has approximately 116 GB when unziped.
+__Note:__ If you are running the project locally and have limited space, please consider using UniRef50 [UniProt](https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref50/uniref50.fasta.gz) instead of UniRef100. To do this, simply replace "uniref100" with "uniref50" wherever it appears. However, please note that UniRef50 offers reduced sequence coverage compared to UniRef100, which may affect the sensitivity and diversity of your analysis.
 
-### models/config-files:
-This folder includes configuration files that set up the hyperparameter searches for the Multi-Layer Perceptron (MLP) and Autoencoder (AE) models. Each configuration defines the search spaces and parameters used to optimize the models’ training and performance.
+To convert this file to Blast database format on Linux or Ubuntu, use:
 
-### config-ae.yaml - Autoencoder Configuration:
-This file outlines the hyperparameter search for the Autoencoder model, using a random search approach aimed at minimizing the loss across training epochs. Key parameters include:
-- encoder_layers: Specifies different layer architectures for the encoder, offering a range of layer sizes to adjust model depth and feature extraction capacity.
-- latent_vector: Sets possible latent space dimensions, ranging from 180 down to 40.
-- activation: Tests various activation functions (relu, leaky-relu, gelu) to find the most effective non-linear transformation.
-- criterion: Uses Mean Squared Error (mse) as the loss function for model training.
-- optimizer: Applies the adam optimizer to enable adaptive learning rates.
-- learning_rate: Explores a range between 0.0001 and 0.01 for learning rate selection.
-- splits: Sets a data split ratio of [0.9, 0.1, 0], allocating 90% of the data for training and 10% for validation. First value is for training, second for validation and third for test. All values must add up to 1.
-- epochs: Tests epochs ranging from 6 to 14.
-- batch_size: Evaluates batch sizes between 32 and 256 to ensure stability during training.
-- shuffle: Shuffles data at each epoch to improve model generalization.
+```bash
+sudo apt-get -y install ncbi-blast+
+makeblastdb -in <path_to_fasta_file>/uniref100.fasta -dbtype prot -out uniref100_db
+```
 
-### config-mlp.yaml - MLP Configuration:
-This file configures the hyperparameter search for the MLP model, using random search to minimize training epoch loss. Primary parameters include:
+__Note__: If you are running this project on a Mac, ensure that you have brew installed. Then, run the following command:
 
-- layers: Defines options for MLP layer architecture and depth, such as num_layers, with flexible architecture types (e.g., =, <, >, <>).
-- activation: Tests multiple activation functions (relu, leaky-relu, gelu, tanh, sigmoid) to evaluate non-linearity effects.
-- optimizer: Tests both adam and sgd optimizers.
-- learning_rate: Adjusts learning rates over a range from 0 to 0.1.
-- splits: Data split configurations include options like [0.7, 0.3, 0] and [0.8, 0.2, 0]. First value is for training, second for validation and third for test. All values must add up to 1.
-- epochs: Ranges between 4 and 10 epochs.
-- batch_size: Tests batch sizes from 32 to 512 to optimize training throughput.
-- shuffle: Ensures data shuffling to enhance training robustness.
+```bash
+brew install blast
+makeblastdb -in <path_to_fasta_file>/uniref100.fasta -dbtype prot -out uniref100_db
+```
+__Note:__ Please ensure that your directory paths do not contain any spaces to avoid potential errors during execution.
 
-These configuration files allow extensive hyperparameter tuning, providing flexibility to adapt both models to the dataset’s specific requirements for optimal performance.
+## Feature Extraction:
 
-### Script files
-#### autoencoder.py
-This Python script is designed to train an Autoencoder model that encodes and reconstructs molecular descriptors for proteins. Model and configuration settings can be provided as command-line arguments.
+To make a new protein chain residue-compound prediction, it is necessary to have:
+- .smi input file: ligand SMILE information and ligand name.
+- .fasta input file: protein sequence information in FASTA format.
+- The Blast database folder extracted from uniref100.fasta using makeblastdb.
+
+To run the complete feature extraction process:
+
+```
+python feature_extraction.py --ligand_input_path <path_smi_file> --protein_input_path <path_fasta_file> --blast_database_path <path_blastdb_folder>
+```
+
+Retrieved features will be saved in three .hdf5 files:
+- prediction/data/h5_files/mordred.hdf5
+- prediction/data/h5_files/spotone.hdf5
+- prediction/data/h5_files/pssm.hdf5
+- prediction/new_prediction/new_prediction.hdf5 (containing all features together)
+
+## Dimensionality Reduction—Autoencoder
+After feature extraction, data dimensionality reduction was performed.
+The Python script autoencoder.py is designed to train an autoencoder model that encodes and reconstructs protein molecular descriptors.
+
+To train an autoencoder, based on a dataset with features and a config file:
 
 ```bash
 usage: autoencoder.py [--dataset DATASET DATASET DATASET] [--model MODEL] [--config CONFIG CONFIG] [--device DEVICE] [--wandb {online,offline,disabled}]
@@ -101,25 +97,32 @@ usage: autoencoder.py [--dataset DATASET DATASET DATASET] [--model MODEL] [--con
 --device DEVICE
          <torch device>
 --wandb {online,offline,disabled}
-
-#example 1: create new model, use local config file and upload results to wandb (autoencode protein features, chain granularity)
-python autoencoder.py --dataset datasets/example-train.hdf5 proteins chain --config models/config-files/config-ae.yaml 10 --device cuda:0 --wandb online
-
-#example 2: reuse model, associate run to already existing sweep and save results locally (autoencode protein features, residue granularity)
-python autoencoder.py --dataset datasets/example-train.hdf5 proteins residue --model models/ae-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
-
-# example 3: create new model, associate run to already existing sweep and upload results to wandb (autoencode protein and ligand features, residue granularity)
-python autoencoder.py --dataset datasets/example-train.hdf5 interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
 ```
 
-#### dataset.py
-The script defines custom dataset classes that load, process, and manage protein-ligand interaction data. These classes are designed to support:
-- Flexible Granularity: Datasets can be accessed at different levels (residues or chains).
-- Data Splits: Supports train, validation, and test splits as specified in the dataset.
-- Balanced Datasets: Additional support for balanced batch handling with the BalancedInteractionsDataset.
+Autoencoder Examples using [example-train.hdf5](example_datasets/example-train.hdf5) dataset:
+- Example 1: create new model, use local config file and upload results to wandb (autoencode protein features, chain granularity)
 
-### multilayer_perceptron.py
-This Python script trains a Multilayer Perceptron (MLP) model on interaction datasets with support for hyperparameter tuning via Weights & Biases (WandB). The script is designed for binary classification tasks involving interaction data, providing configurable architectures, training metrics, and options for balanced datasets.
+```bash
+python autoencoder.py --dataset example_datasets/example-train.hdf5 proteins chain --config models/config-files/config-ae.yaml 10 --device cuda:0 --wandb online
+```
+
+- Example 2: reuse model, associate run to already existing sweep and save results locally (autoencode protein features, residue granularity)
+
+```bash
+python autoencoder.py --dataset example_datasets/example-train.hdf5 proteins residue --model models/ae-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
+```
+
+- Example 3: create new model, associate run to already existing sweep and upload results to wandb (autoencode protein and ligand features, residue granularity)
+
+```bash
+python autoencoder.py --dataset example_datasets/example-train.hdf5 interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
+```
+
+## Multilayer Perceptron
+After data dimensionality reduction with an autoencoder, data was used to train a Multilayer Perceptron (MLP) model.
+The Python script multilayer_perceptron.py trains a MLP model on interaction datasets with support for hyperparameter tuning via Weights & Biases (WandB). The script is designed for binary classification tasks involving interaction data, providing configurable architectures, training metrics, and options for balanced datasets.
+
+To train a MLP model with transformed data after dimensionality reduction:
 
 ```bash
 usage: multilayer_perceptron.py [--dataset DATASET DATASET DATASET] [--model MODEL] [--config CONFIG CONFIG] [--device DEVICE] [--wandb {online,offline,disabled}]
@@ -133,45 +136,126 @@ usage: multilayer_perceptron.py [--dataset DATASET DATASET DATASET] [--model MOD
 --device DEVICE
          <torch device>
 --wandb {online,offline,disabled}
-
-#example 1: create new model, use local config file and upload results to wandb (train on protein and ligand features, residue granularity)
-python multilayer_perceptron.py --dataset datasets/example-train.hdf5 interactions residue --config models/config-files/config-mlp.yaml 10 --device cuda:0 --wandb online
-
-#example 2: reuse model, associate run to already existing sweep and save results locally (train on protein and ligand features, chain granularity)
-python multilayer_perceptron.py --dataset datasets/example-train.hdf5 interactions chain --model models/mlp-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
-
-# example 3: create new model, associate run to already existing sweep and upload results to wandb (train on balanced protein and ligand features, residue granularity) (balanced datasets have an extra root group in the HDF5 file called balanced-batches)
-python multilayer_perceptron.py --dataset some-balanced-dataset.hdf5 balanced-interactions residue --config wandb_user/wandb_project/wandb_sweep_id 10 --device cuda:0 --wandb online
-
-# example 4: reuse model, use local config file and save results locally (test, chain granularity)
-python multilayer_perceptron.py --dataset datasets/example-predict.hdf5 interactions chain --model models/mlp-silvery-sweep-16.pt --config models/config-files/config-mlp-example-predict.yaml 1 --wandb disabled
 ```
 
-#### torch_map.py
-This script defines mappings for common activation functions, loss functions (criterions), and optimizers to streamline model configuration.
+MLP Examples using [example-train.hdf5](example_datasets/example-train.hdf5) for training and [example-predict.hdf5](example_datasets/example-predict.hdf5) dataset for prediction:
 
-#### transformations.py
-This script defines several functions for managing and transforming datasets. It includes support for removing or updating specific dataset features, handling missing values, and rebalancing data through oversampling and SMOTE. Additionally, it logs each transformation, providing transparency and reproducibility.
+- Example 1: create new model, use local config file and upload results to wandb (train on protein and ligand features, residue granularity)
 
-There is no `__main__` function in this script. It is designed to be imported and used in other scripts for data transformation operations. We recommend using the provided transformations-logs to understand the transformations applied to the dataset-example.hdf5.
-
-- `remove_clean(filepath: str, masks: dict = {}) -> None`: Cleans up the dataset by removing interactions, proteins, and ligands that are no longer valid or needed based on the provided masks. This is typically used to filter out entries with missing or invalid data.
-- `remove_residues(original_filepath: str, transformed_filepath: str, value: float, features: Union[List[int], slice], any: bool = True) -> None`: Removes residues from the dataset based on specified feature values, such as NaN or Inf, updating the dataset accordingly. This helps in maintaining data integrity by excluding unreliable data points.
-- `remove_chains(original_filepath: str, transformed_filepath: str, value: float, features: Union[List[int], slice], any: bool = True) -> None`: Removes protein chains from the dataset based on specified feature values, such as NaN or Inf, updating the dataset accordingly. This ensures that only valid and complete data is used for analysis.
-- `remove_ligands(original_filepath: str, transformed_filepath: str, value: float, features: Union[List[int], slice], any: bool = True) -> None`: Removes ligands from the dataset based on specified feature values, such as NaN or Inf, updating the dataset accordingly. This is crucial for maintaining the quality of ligand data.
-- `remove_protein_features(original_filepath: str, transformed_filepath: str, value: float, features: Union[List[int], slice], any: bool = True) -> None`: Removes specific protein features from the dataset based on specified values, such as NaN or Inf, updating the dataset accordingly. This helps in refining the dataset by excluding unreliable feature data.
-- `remove_ligand_features(original_filepath: str, transformed_filepath: str, value: float, features: Union[List[int], slice], any: bool = True) -> None`: Removes specific ligand features from the dataset based on specified values, such as NaN or Inf, updating the dataset accordingly. This ensures that only valid ligand feature data is retained.
-- `set_dtype(original_filepath: str, transformed_filepath: str, features: Optional[Type[np.dtype]] = None, targets: Optional[Type[np.dtype]] = None) -> None`: Sets the data type for features and targets in the dataset, updating the dataset accordingly. This is useful for ensuring consistency in data types across the dataset.
-- `reduce_dimensionality_ae_proteins(original_filepath: str, transformed_filepath: str, model_filepath:str)`: Reduces the dimensionality of protein features using an autoencoder model, updating the dataset accordingly. This transformation helps in simplifying the dataset while retaining essential information.
-- `sample_smote(original_filepath: str, transformed_filepath: str, residue_granularity: bool, batch_size: int, shuffle: bool = False, seed: int = 0)`: Applies SMOTE (Synthetic Minority Over-sampling Technique) to balance the dataset, creating synthetic samples for the minority class. This transformation results in a new dataset type called [BalancedInteractionsDataset](datasets.py#L314), which helps in addressing class imbalance.
-- `sample_over(original_filepath: str, transformed_filepath: str, residue_granularity: bool, batch_size: int, shuffle: bool = False, seed: int = 0)`: Applies random oversampling to balance the dataset, duplicating samples from the minority class. This transformation also results in a new dataset type called [BalancedInteractionsDataset](datasets.py#L314), which is useful for mitigating class imbalance issues.
-
-### New Prediction:
-To make a new prediction, ensure you have the SMILES and sequences of the complexes you are interested in. Refer to the PREDICTION folder and its README file for instructions, as well as an example provided in the NEW_PREDICTIONS folder. Additionally, update the directory in the ViralBindPredict_variables.py script located in the SCRIPTS folder.
-
-### If you are running this project on Windows and get an encoding related error, please run the following command in the terminal before running the project.
 ```bash
-set PYTHONUTF8=1
+python multilayer_perceptron.py --dataset example_datasets/example-train.hdf5 interactions residue --config models/config-files/config-mlp.yaml 10 --device cuda:0 --wandb online
+```
+- Example 2: reuse model, associate run to already existing sweep and save results locally (train on protein and ligand features, chain granularity)
+
+```bash
+python multilayer_perceptron.py --dataset example_datasets/example-train.hdf5 interactions chain --model models/mlp-model.pt --config wandb_user/wandb_project/wandb_sweep_id 10 --device cpu --wandb offline
+```
+- Example 3: reuse model, use local config file and save results locally (test, chain granularity)
+
+```bash
+python multilayer_perceptron.py --dataset example_datasets/example-predict.hdf5 interactions chain --model models/mlp-silvery-sweep-16.pt --config models/config-files/config-mlp-example-predict.yaml 1 --wandb disabled
+```
+
+## NEW PREDICTION
+The workflow predicts interactions between protein chains and compounds based on the provided input files: 
+
+- Protein Chains (.fasta file): Each entry in the FASTA file corresponds to a protein chain. 
+- Compounds (.smi file): Each line in the SMILES file corresponds to a compound.
+- There must be the same number of protein chains and compounds in the input files.
+- For interaction predictions, entry 1 in the .fasta file is paired with entry 1 in the .smi file, and so on:
+
+Interaction example on example files in prediction/new_prediction/ folder:
+- protein_predict.fasta has two protein entries (4tz2:A and 4tz2:A)
+- ligand_predict.smi has two compounds (CHEMBL565765 and CHEMBL577478)
+- ViralBindPredict will predict protein chain residue-compound interactions between protein chain 4tz2:A and compound CHEMBL565765; and between protein chain 4tz2:A and compound CHEMBL577478.
+
+To run a new prediction, please make sure that you have the uniref100 database in your computer.
+
+### 1- Feature extraction:
+
+Input files:
+- .smi input file: ligand SMILE information and ligand name. (example: [prediction/new_prediction/ligand_predict.smi](prediction/new_prediction/ligand_predict.smi)
+- .fasta input file: protein sequence information in FASTA format (example: [prediction/new_prediction/protein_predict.fasta](prediction/new_prediction/protein_predict.fasta)
+- Blast database folder extracted from uniref100.fasta using makeblastdb. Please replace the database location in the command. To run pssm, it is necessary to repeate the name of the database, as demonstrated in the example. You might need to change uniref100 to uniref100_db in the command.
+
+Output file:
+- prediction/new_prediction/new_prediction.hdf5 is a hdf5 file with protein chain residue and compound feature information
+
+To run the complete feature extraction process:
+
+```bash
+python feature_extraction.py --ligand_input_path <path_smi_file> --protein_input_path <path_fasta_file> --blast_database_path <path_blastdb_folder>
+```
+Example using .smi and .fasta files present in the prediction/new_prediction folder:
+
+```bash
+python feature_extraction.py --ligand_input_path prediction/new_prediction/ligand_predict.smi --protein_input_path prediction/new_prediction/protein_predict.fasta --blast_database_path your/database/location/uniref100/uniref100
+```
+
+### 2- Dimensionality reduction and MLP Prediction:
+
+Input file:
+- .hdf5 file created with feature extraction (example: prediction/new_prediction/new_prediction.hdf5)
+
+Output files:
+- hdf5 file after autoencoder and data transformations (example: prediction/new_prediction/new_prediction_transformed.hdf5)
+- a .csv file per interaction with ViralBindPredict protein chain residue-compound predictions (example: prediction/new_prediction/4tz2:A:CHEMBL577478.csv and prediction/new_prediction/4tz2:A:CHEMBL565765.csv)
+
+To run dimensionality reduction and MLP prediction:
+
+```bash
+python prediction.py --hdf5_file_path <path_h5_file> --autoencoder_model_path <path_autoencoder_model> --mlp_model_path <path_mlp_model> --cuda_device_idx <cuda_device_index>
+```
+Example using new_prediction.hdf5 file present in the prediction/new_prediction folder:
+
+```bash
+python prediction.py --hdf5_file_path prediction/new_prediction/new_prediction.hdf5 --autoencoder_model_path models/ae-fanciful-sweep-308.pt --mlp_model_path models/mlp-silvery-sweep-16.pt --cuda_device_idx 0
+```
+
+## ViralBindPredictDB
+
+Dataset __viralbindpredictDB.hdf5__ regarding protein chain/residue classification, Mordred, SPOTONE and PSSM features is available at [ViralBindPredict Dropbox](https://www.dropbox.com/scl/fo/nq47acmr2ty62iflu9rwn/AJhe9a9gqoKblgHkYDMf_Gk?rlkey=dcivaufhohazumpetifq9chkj&st=ac9imrzl&dl=0).
+Folder [ViralBindPredictDB](ViralBindDB/) contains text files (_.txt_) with keys and descriptors from viralbindpredictDB.hdf5.
+- class_keys.txt: file with the 20.441 class keys with nomenclature _PDB ID (4 letters) : Chain ID (1 letter) _ PDB Compound ID (3 letters)_, e.g., 102l:A_0BU.
+- ligands.txt: file with the 2.066 ligand keys with nomenclature _PDB Compound ID (3 letters)_, e.g., 0BU.
+- mordred_descriptors.txt: file with the 1514 Mordred features.
+- proteins.txt: file with the 12.824 protein keys with nomenclature _PDB ID (4 letters) : Chain ID (1 letter)_, e.g., 102l:A.
+- spotone_descriptors.txt: file with the 173 SPOTONE features.
+- pssm_descriptors.txt: file with the 42 PSSM features.
+
+## Folder organization:
+
+[prediction/](prediction/) folder:
+- Folder prediction/ has a sub-folder new_prediction/ that has example files to run a new prediction with [ligand information](prediction/new_prediction/ligand_predic.smi) and [protein information](prediction/new_prediction/protein_predict.fasta).
+- After a new prediction run with those input files, new sub-folders prediction/data/features/ and prediction/data/h5_files/ folders are created with ligand and protein descriptors retrieved from Mordred, SPOTONE and PSSM. prediction/data/features/ saves features in .csv files and prediction/data/hdf5/ folder saves features in .hdf5 files.
+- .hdf5 files are concatenated into prediction/new_prediction/new_prediction.hdf5 file to further proced to data transformation.
+- prediction/new_prediction/new_prediction.hdf5 file is used to transform data, through an autoencoder and to select features used for model training. After this process, transformed data is saved in prediction/new_prediction/new_prediction_transformed.hdf5
+- This .hdf5 file with transformed data is used for a new prediction, and at the end, the ViralBindPredict model predictions are saved as .csv files in the diretory prediction/new_prediction/.
+
+prediction/ folder after running a prediction:
+
+```bash
+\$HOME\VirHostAI\prediction
+   \data
+      \features
+         \mordred
+            \CHEMBL565765.csv
+            \CHEMBL577478.csv
+         \spotone
+            \4tz2:A.fasta_processed.csv            
+         \pssm
+            \4tz2:A.pssm
+      \h5_files
+         \mordred.hdf5
+         \pssm.hdf5
+         \spotone.hdf5
+   \new_prediction
+      \ligand_predict.smi
+      \protein_predict.fasta
+      \new_prediction.hdf5
+      \new_prediction_transformed.hdf5
+      \4tz2:A:CHEMBL565765.csv
+      \4tz2:A:CHEMBL577478.csv
 ```
 
 ### Weight initialization
