@@ -82,7 +82,7 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
         else:
             layers = [n_input] + layers
         model = MultilayerPerceptron(layers=layers, activation=wandb_run.config.activation) if model is None else model
-        assert isinstance(model, MultilayerPerceptron), 'ERROR: model must be a MultilayerPerceptron'
+        #assert isinstance(model, MultilayerPerceptron), 'ERROR: model must be a MultilayerPerceptron'
 
         model.to(device)
         criterion = CRITERIONS['bce-logits']()
@@ -290,7 +290,7 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
         dataset.set_split('test')
         if test_dataloader:
             if wandb_run.config.batch_size == 1:
-                file = open('./outputs.csv', mode='w', newline='')
+                file = open('./source/predictions.csv', mode='w', newline='')
                 writer = csv.writer(file)
                 writer.writerow(['interaction', 'shape', 'probabilities', 'predictions'])
             
@@ -345,7 +345,7 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
                                        'test/batch-recall': batch_recall, 
                                        'test/batch-f1-score': batch_f1_score, 
                                        'test/batch-auroc': batch_auroc})
-                
+                """
                 epoch_loss /= len(test_dataloader)
 
                 epoch_accuracy /= len(test_dataloader)
@@ -360,7 +360,7 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
                 print(f'      test/epoch-recall={epoch_recall:.4f}')
                 print(f'      test/epoch-f1-score={epoch_f1_score:.4f}')
                 print(f'      test/epoch-auroc={epoch_auroc:.4f}')
-            
+                """
             if wandb_run.config.batch_size == 1:
                 file.close()
 
@@ -378,30 +378,57 @@ def run(dataset: Union[InteractionsDataset, BalancedInteractionsDataset], model:
 
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', default=['datasets/dataset-viral-transformed-1.hdf5', 'interactions', 'residue'], nargs=3, help='<hdf5 dataset filepath> {interactions, balanced-interactions} {residue, chain}')
+def main(args=None):
+    parser = argparse.ArgumentParser(description="Multilayer Perceptron Runner")
+    parser.add_argument('--dataset', nargs=3, required=True, help='<hdf5 dataset filepath> {interactions, balanced-interactions} {residue, chain}')
     parser.add_argument('--model', default=None, help='<torch model filepath>')
-    parser.add_argument('--config', default=['models/config-files/config-mlp.yaml', '1'], nargs=2, help='{<yaml sweep config filepath>, <wandb sweep author/project/id>} <number of runs>')
+    parser.add_argument('--config', nargs=2, required=True, help='{<yaml sweep config filepath>, <wandb sweep author/project/id>} <number of runs>')
     parser.add_argument('--device', default='cpu', help='<torch device>')
-    parser.add_argument('--wandb', default='online', choices=['online', 'offline', 'disabled'])
-    args = parser.parse_args()
-    
-    assert args.dataset[1] in ['interactions', 'balanced-interactions'], 'ERROR: dataset must be "interactions" or "balanced-interactions"'
-    if args.dataset[1] == 'interactions':
-        dataset = InteractionsDataset(args.dataset[0])
-    elif args.dataset[1] == 'balanced-interactions':
-        dataset = BalancedInteractionsDataset(args.dataset[0])
-    
-    assert args.dataset[2] in ['residue', 'chain'], 'ERROR: dataset granularity must be "residue" or "chain"'
-    if args.dataset[2] == 'chain':
+    parser.add_argument('--wandb', default='online', choices=['online', 'offline', 'disabled'], help='wandb mode')
+
+    # Parse arguments
+    if isinstance(args, argparse.Namespace):
+        args = vars(args)  # Convert Namespace to dictionary
+    else:
+        args = vars(parser.parse_args(args)) if args else vars(parser.parse_args())
+
+    # Dataset Validation
+    assert args['dataset'][1] in ['interactions', 'balanced-interactions'], 'ERROR: dataset must be "interactions" or "balanced-interactions"'
+    if args['dataset'][1] == 'interactions':
+        dataset = InteractionsDataset(args['dataset'][0])
+    elif args['dataset'][1] == 'balanced-interactions':
+        dataset = BalancedInteractionsDataset(args['dataset'][0])
+
+    assert args['dataset'][2] in ['residue', 'chain'], 'ERROR: dataset granularity must be "residue" or "chain"'
+    if args['dataset'][2] == 'chain':
         dataset.set_granularity()
 
-    device = torch.device(args.device)
+    device = torch.device(args['device'])
 
-    model = torch.load(args.model, pickle_module=dill, map_location=device) if args.model else None
+    # Model Loading
+    model = None
+    if args['model']:
+        try:
+            model = torch.load(args['model'], pickle_module=dill, map_location=device)
+        except Exception as e:
+            exit(1)
+
+    # WandB Login and Sweep
+    try:
+        wandb.login()
+        config_path = args['config'][0]
+        if config_path.split('.')[-1] in ['yaml', 'yml']:
+            with open(config_path, 'r') as file:
+                sweep_config = yaml.load(file, Loader=yaml.Loader)
+            sweep_id = wandb.sweep(sweep=sweep_config)
+        else:
+            sweep_id = config_path
+
+        sweep_agent_function = functools.partial(run, dataset, model, device, args['wandb'])
+        wandb.agent(sweep_id=sweep_id, function=sweep_agent_function, count=int(args['config'][1]))
+    except Exception as e:
+        exit(1)
+
     
-    wandb.login()
-    sweep_id = wandb.sweep(sweep=yaml.load(open(args.config[0], 'r'), Loader)) if args.config[0].split('.')[-1] in ['yaml', 'yml'] else args.config[0]
-    sweep_agent_function = functools.partial(run, dataset, model, device, args.wandb)
-    wandb.agent(sweep_id=sweep_id, function=sweep_agent_function, count=int(args.config[1]))
+if __name__ == '__main__':
+    main()
