@@ -1,3 +1,8 @@
+__author__ = "T. Almeida"
+__email__ = "tomas.duarte.almeida@tecnico.ulisboa.pt"
+__group__ = "Data-Driven Molecular Design"
+__project__ = "ProLigResDB: A Comprehensive Repository of Experimental Protein Residue-Ligand Interactions from Protein Data Bank"
+
 import argparse
 import csv
 from source.datasets import InteractionsDataset, BalancedInteractionsDataset
