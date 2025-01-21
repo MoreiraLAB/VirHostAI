@@ -46,6 +46,7 @@ parameters:
       - 80
       - 60
       - 40
+      - 20
   
   activation:
     values: [relu, leaky-relu, gelu, tanh, sigmoid]
