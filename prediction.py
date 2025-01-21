@@ -1,3 +1,8 @@
+__author__ = "C. Marques-Pereira"
+__email__ = "amarques@cnc.uc.pt"
+__group__ = "Data-Driven Molecular Design"
+__project__ = "ProLigResDB: A Comprehensive Repository of Experimental Protein Residue-Ligand Interactions from Protein Data Bank"
+
 import sys
 import argparse
 import os
