@@ -12,16 +12,32 @@ metric:
 parameters:
   encoder_layers:
     values:
-      - [800, 400]
-      - [700, 400]
+      - [100]
+      - [140]
+      - [180]
+      - [200]
+      - [400]
+      - [600]
+      - [100, 80]
+      - [140, 80]
+      - [180, 100]
+      - [400, 200]
+      - [600, 200]
       - [600, 300]
-      - [800, 500, 200]
-      - [800, 600, 400]
+      - [600, 400]
+      - [800, 400]
+      - [600, 400, 200]
       - [700, 500, 300]
+      - [800, 550, 250]
+      - [800, 600, 400]
+      - [500, 400, 300, 200]
+      - [600, 500, 400, 300, 200]
       - [800, 650, 500, 350, 200]
+      - [800, 700, 600, 500, 400, 200]
   
   latent_vector:
     values:
+      - 200
       - 180
       - 160
       - 140
@@ -32,13 +48,13 @@ parameters:
       - 40
   
   activation:
-    values: [relu, leaky-relu, gelu]
+    values: [relu, leaky-relu, gelu, tanh, sigmoid]
   
   criterion:
     value: mse
   
   optimizer:
-    value: adam
+    values: [adam, sgd]
   
   learning_rate:
     distribution: uniform
@@ -46,12 +62,15 @@ parameters:
     max: 0.01
   
   splits:
-    value: [0.9, 0.1, 0]
+    values: 
+      - [0.9, 0.1, 0]
+      - [0.8, 0.2, 0]
+      - [0.95, 0.05, 0]
   
   epochs:
-    values: [6, 8, 10, 12, 14]
+    values: [6, 8, 10, 12, 14, 16, 18, 20, 30, 40, 50, 80]
   batch_size:
-    values: [32, 64, 128, 256]
+    values: [4, 8, 16, 32, 64, 128, 256, 512]
   shuffle:
     value: True
 
