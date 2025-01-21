@@ -1,3 +1,8 @@
+__author__ = "C. Marques-Pereira"
+__email__ = "amarques@cnc.uc.pt"
+__group__ = "Data-Driven Molecular Design"
+__project__ = "ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights"
+
 # mordred_features.py
 # INPUT FILES: (path: "./NEW_PREDICTIONS/") "ligand_predict.smi"
 # OUTPUT FILES: (path: "./FEATURES/") - Folder with descriptors and feature information
