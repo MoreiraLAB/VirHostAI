@@ -1,3 +1,8 @@
+__author__ = "C. Marques-Pereira"
+__email__ = "amarques@cnc.uc.pt"
+__group__ = "Data-Driven Molecular Design"
+__project__ = "ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights"
+
 import h5py
 import pandas as pd
 from source.feature_extraction.ViralBindPredict_variables import PREDICTION_FOLDER, H5_FOLDER, open_txt_file
