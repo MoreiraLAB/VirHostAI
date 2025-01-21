@@ -1,3 +1,8 @@
+__author__ = "C. Marques-Pereira"
+__email__ = "amarques@cnc.uc.pt"
+__group__ = "Data-Driven Molecular Design"
+__project__ = "ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights"
+
 #pssm_features.py
 #INPUT FILES: (path: "./NEW_PREDICTION/") "protein_predict.fasta" - FASTA file with protein sequences
 #OUTPUT FILES: (path: "./FEATURES/PSSM/") - Creates PSSM folder with individual fasta for each chain and spotone features
