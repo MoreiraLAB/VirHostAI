@@ -31,7 +31,7 @@ __Note:__ If you are running this project on a Mac, please install the required 
 # our pytorch installation: conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 conda create -n ViralBindPredict
 conda activate ViralBindPredict
-conda install torch torchmetrics torchinfo numpy h5py tqdm dill wandb imbalanced-learn scikit-learn scipy pyarrow rdkit mordred requests biopython pandas imblearn pyaml
+conda install torch torchmetrics torchinfo numpy h5py tqdm dill wandb imbalanced-learn scikit-learn scipy pyarrow rdkit mordred requests biopython pandas imblearn pyyaml
 ```
 
 Before running this project:
