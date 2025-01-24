@@ -262,4 +262,4 @@ prediction/ folder after running a prediction:
 The weights of the models are initialized using a random approach with no fixed seed.
 
 ### If you use ViralBindPredict, please cite the following.
-[ViralBindPredict: Empowering Viral Protein-Ligand Binding Sites through Deep Learning and Protein Sequence-Derived Insights] PENDING CITATION
+[ViralBindPredict: Enhancing Viral Protein-Ligand Interaction Predictions through Deep Learning!] PENDING CITATION
