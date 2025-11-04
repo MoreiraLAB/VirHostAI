@@ -1,0 +1,13 @@
+{
+    "activation": "relu",
+    "optimizer": "adam",
+    "learning_rate": 2.8418990234297092e-05,
+    "batch_size": 512,
+    "epochs": 87,
+    "dropout": 0.4455347637838675,
+    "hidden_dim": 640,
+    "num_layers": 3,
+    "weight_decay": 5.078605490235266e-06,
+    "batch_norm": false,
+    "pos_weight_value": 2.273008053587599
+}

@@ -1,0 +1,13 @@
+{
+    "activation": "tanh",
+    "optimizer": "adam",
+    "learning_rate": 4.6341756106707046e-05,
+    "batch_size": 512,
+    "epochs": 54,
+    "dropout": 0.11278712030328493,
+    "hidden_dim": 896,
+    "num_layers": 7,
+    "weight_decay": 3.415770447925447e-06,
+    "batch_norm": false,
+    "pos_weight_value": 1.51080130839678
+}

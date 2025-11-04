@@ -1,0 +1,13 @@
+{
+    "activation": "gelu",
+    "optimizer": "sgd",
+    "learning_rate": 0.0035610744337325083,
+    "batch_size": 64,
+    "epochs": 69,
+    "dropout": 0.12024583776747609,
+    "hidden_dim": 1024,
+    "num_layers": 12,
+    "weight_decay": 1.2703020117399194e-06,
+    "batch_norm": true,
+    "pos_weight_value": 1.1052994917168828
+}

@@ -1,0 +1,13 @@
+{
+    "activation": "leaky_relu",
+    "optimizer": "adam",
+    "learning_rate": 1.9546404274458605e-05,
+    "batch_size": 512,
+    "epochs": 86,
+    "dropout": 0.2900484310169422,
+    "hidden_dim": 1024,
+    "num_layers": 3,
+    "weight_decay": 3.385107101792434e-05,
+    "batch_norm": false,
+    "pos_weight_value": 1.273864168863528
+}

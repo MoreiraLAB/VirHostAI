@@ -1,2 +1,0 @@
->>> reduce_dimensionality_ae_proteins: original_filepath=prediction/new_prediction/new_prediction.hdf5, transformed_filepath=prediction/new_prediction/new_prediction_transformed.hdf5, model_filepath=models/ae-fanciful-sweep-308.pt
-protein features went from 216 to 60

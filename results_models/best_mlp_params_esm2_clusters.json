@@ -1,0 +1,13 @@
+{
+    "activation": "gelu",
+    "optimizer": "adam",
+    "learning_rate": 5.513041186884607e-05,
+    "batch_size": 512,
+    "epochs": 62,
+    "dropout": 0.34099272859976976,
+    "hidden_dim": 512,
+    "num_layers": 11,
+    "weight_decay": 2.19810882972947e-05,
+    "batch_norm": false,
+    "pos_weight_value": 1.4177160411221705
+}
