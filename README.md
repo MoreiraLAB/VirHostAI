@@ -81,10 +81,10 @@ To recreate the ViralBindPredict database, navigate to the ViralBindPredict fold
 cd ViralBindPredict
 ```
 
-All data frames and folders generated during this process are provided at the following [link](https://1drv.ms/f/c/6645cc99a95f711d/EtRIfMI6bSxBuY5PVGIRtgUBL6lfH1W9iuBLVbHXlwd8Uw?e=EinOKH). 
+All data frames and folders generated during this process are provided at the following [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0). 
 
 **Before starting:**
-**Please download the components_18_06.cif file from the ViralBindPredict/ViralBindPredict/ folder in the [link](https://1drv.ms/f/c/6645cc99a95f711d/EhugUMOUp49Hqx0gKJi-lDUBnIpQWpGjPzf5RiiDvkM5Cw?e=pf6sef), and save it to the ./ViralBindPredict directory of this repository.**
+**Please download the components_18_06.cif file from the ViralBindPredict/ViralBindPredict/ folder in the [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0), and save it to the ./ViralBindPredict directory of this repository.**
 
 Then, run the following commands:
 
@@ -94,7 +94,7 @@ Then, run the following commands:
 python 1_download_cifs.py
 ```
 
-> Note: This PDB list was obtained on 18/06/2025. Some PDB entries may become obsolete over time and may no longer be available for download; such entries can be found in the obsolete PDB archive. However, we provide the downloaded CIF files in compressed format at [link](https://1drv.ms/f/c/6645cc99a95f711d/EhugUMOUp49Hqx0gKJi-lDUBnIpQWpGjPzf5RiiDvkM5Cw?e=pf6sef).
+> Note: This PDB list was obtained on 18/06/2025. Some PDB entries may become obsolete over time and may no longer be available for download; such entries can be found in the obsolete PDB archive. However, we provide the downloaded CIF files in compressed format at [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0).
 
 2. **```2_preprocess_chains.py```** -> Processes all CIF files in the cif/ folder. For each protein chain, it converts modified residues (listed in _pdbx_struct_mod_residue) from HETATM to ATOM and remaps them to standard residues using parent_comp_id; filters out chains containing ambiguous amino acids (e.g., UNK); and tracks ligands (HETATM entries excluding water). **Outputs:**
 split_cif_chains/;fasta_sequences/; and ligands_per_chain.csv
@@ -118,7 +118,7 @@ python 4_keep_viral_only.py
 
 5. **```5_preprocess_ligands.py```** -> Loads data: **components_18_06.cif** (ligand chemical info retrivered from PDB on 18/06/2025), **ligands_per_chain_viral_only.csv** (ligands bound to viral chains), and predefined exclusions lists (ions, solvents, possible artifacts). Applies filtering rules and steps, including basic exclusions, SMILES & Structure quality, conflict rules. **Outputs:** ligands_filtered.csv: Final curated ligand list with SMILES, InChIKey, etc; ligands_excluded.csv: All excluded ligands with reasons; ligands_excluded_conflicts.csv: Ligands removed due to SMILES/InChI conflicts; excluded_counts_by_reason.csv: Count summary of all exclusion reasons; question_type_valid_chemtype_ligands.txt: Log of ligands with missing TYPE but valid CHEM_TYPE. 
 
-> Note: Please **download components_18_06.cif** file from the ViralBindPredict/ViralBindPredict/ folder in the [link](https://1drv.ms/f/c/6645cc99a95f711d/EhugUMOUp49Hqx0gKJi-lDUBnIpQWpGjPzf5RiiDvkM5Cw?e=pf6sef), and save it to the ./ViralBindPredict directory of this repository.
+> Note: Please **download components_18_06.cif** file from the ViralBindPredict/ViralBindPredict/ folder in the [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0), and save it to the ./ViralBindPredict directory of this repository.
 
 ```bash
 python 5_preprocess_ligands.py
@@ -309,7 +309,7 @@ cd ..
 
 Optuna-based hyperparameter optimization for both LightGBM and MLP models. Saves the resulting best hyperparameters to the appropriate output folder.
 
-> Note: This table summarizes the training and validation inputs used for Optuna optimization, along with the output directories for the results. If you have already run the ViralBindPredict database creation pipeline, you should have all required inputs for this task. Otherwise, please refer to the datasets in [link](https://1drv.ms/f/c/6645cc99a95f711d/EtRIfMI6bSxBuY5PVGIRtgUBL6lfH1W9iuBLVbHXlwd8Uw?e=EinOKH) and download them to the indicated folders before running Optuna or training models.
+> Note: This table summarizes the training and validation inputs used for Optuna optimization, along with the output directories for the results. If you have already run the ViralBindPredict database creation pipeline, you should have all required inputs for this task. Otherwise, please refer to the datasets in [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0) and download them to the indicated folders before running Optuna or training models.
 
 | Dataset | Script/Algorithm | Experiment | Split | Input Folder | Train | Val | Output (models & hyperparameters) | Study Name | Database Name | json Name |
 |:--|:--|:--|:--|:--|:--|:--|:--|:--|:--|:--|
@@ -361,7 +361,7 @@ python LGBM_optuna.py --train ViralBindPredict/splits_esm2_output_standardized_n
 
 17. Train MLP and LightGBM using best hyperparameters found during Optuna optimization
 
-> Note: Before running this step, make sure you have the HDF5 files required for training, validation, and evaluation. These can be generated by following the pipeline provided in this repository, which includes the ViralBindPredict Database creation and the Model Optimization and Training steps. However, the input HDF5 files and the JSON files containing the best hyperparameters used for training and evaluating all models are also available at [link](https://1drv.ms/f/c/6645cc99a95f711d/EtRIfMI6bSxBuY5PVGIRtgUBL6lfH1W9iuBLVbHXlwd8Uw?e=EinOKH) in the corresponding ViralBindPredict/splits_*/ and results_*/ folders.
+> Note: Before running this step, make sure you have the HDF5 files required for training, validation, and evaluation. These can be generated by following the pipeline provided in this repository, which includes the ViralBindPredict Database creation and the Model Optimization and Training steps. However, the input HDF5 files and the JSON files containing the best hyperparameters used for training and evaluating all models are also available at [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0) in the corresponding ViralBindPredict/splits_*/ and results_*/ folders.
 
 ```bash
 
@@ -435,8 +435,8 @@ python LGBM_besthyperparameters.py --train ViralBindPredict/splits_prottrans_out
 
 ## New Prediction
 
-> Note: This table summarizes the input requirements for making new predictions using the MLP models trained in the previous steps. To perform a prediction, you need an Excel file formatted like the example provided in new_prediction/new_prediction.xlsx. Make sure the file includes all required columns, including SMILES and sequence, corresponding to the complex you wish to predict. Modify the entries as needed, and refer to the examples below for guidance. If you only wish to perform predictions without running the entire pipeline, all trained models, scalers, and reference HDF5 files are already provided in this repository or available through the [link](https://1drv.ms/f/c/6645cc99a95f711d/EtRIfMI6bSxBuY5PVGIRtgUBL6lfH1W9iuBLVbHXlwd8Uw?e=EinOKH). These files are located in the corresponding ViralBindPredict/, ViralBindPredict/splits_*/, and results_*/ folders.
-Please download any missing files — especially the reference HDF5 files (Ref h5) — from the appropriate directory in the [link](https://1drv.ms/f/c/6645cc99a95f711d/EhugUMOUp49Hqx0gKJi-lDUBJRa0c0L5dzGBKvYLrgdnOg?e=arex95), place them in their designated ViralBindPredict/ folder, and then run the commands as shown in the examples below.
+> Note: This table summarizes the input requirements for making new predictions using the MLP models trained in the previous steps. To perform a prediction, you need an Excel file formatted like the example provided in new_prediction/new_prediction.xlsx. Make sure the file includes all required columns, including SMILES and sequence, corresponding to the complex you wish to predict. Modify the entries as needed, and refer to the examples below for guidance. If you only wish to perform predictions without running the entire pipeline, all trained models, scalers, and reference HDF5 files are already provided in this repository or available through the [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0). These files are located in the corresponding ViralBindPredict/, ViralBindPredict/splits_*/, and results_*/ folders.
+Please download any missing files — especially the reference HDF5 files (Ref h5) — from the appropriate directory in the [link](https://www.dropbox.com/scl/fo/yjp42fw4t2qntmqsbgfs2/AGzsOo8_KJPzPJ31_nLou3g?rlkey=holflmfs9rrte6z6t9hk9bms9\u0026st=lj4lk00c\u0026dl=0), place them in their designated ViralBindPredict/ folder, and then run the commands as shown in the examples below.
 
 | Dataset | Experiment | Ref h5 | Protein Scaler | Ligand Scaler | Model | Output Directory |
 |:--|:--|:--|:--|:--|:--|:--|
